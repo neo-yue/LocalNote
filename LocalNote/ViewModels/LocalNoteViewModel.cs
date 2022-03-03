@@ -1,4 +1,6 @@
-﻿using LocalNote.Models;
+﻿using LocalNote.Command;
+using LocalNote.Models;
+using LocalNote.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,14 +13,28 @@ using System.Threading.Tasks;
 
 namespace LocalNote.ViewModels
 {
-    public class LocalNoteViewModel
+    public class LocalNoteViewModel : INotifyPropertyChanged
     {
+        public MainPage MainPage { get; set; }
+        
+        public AddCommand AddCommand { get; }
+        public SaveCommand SaveCommand { get; } 
+
+        public LocalNoteRepo localNoteRepo { get; }
+
         public ObservableCollection<NoteModel> LocalNotes { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
-
+       // private string _content;    
         public string Title { get; set; }
-        public string Content { get; set; }
+        
+
+
+        private string _content;
+
+        public string Content { get { return MainPage.NoteContent; } set { _content = value;} }
+
+        
 
         private string _filter;
 
@@ -29,13 +45,41 @@ namespace LocalNote.ViewModels
 
         public LocalNoteViewModel() {
 
+            AddCommand = new AddCommand(this);
+            SaveCommand = new SaveCommand(this);
             LocalNotes=new ObservableCollection<NoteModel>();
-            for (int i = 1; i < 10; i++) {
-               NoteModel note = new NoteModel( "Note "+i, "Just for test: Here is Note "+i);
-                _allLocalNotes.Add(note);
-            }
+            //for (int i = 1; i < 10; i++) {
+            //   NoteModel note = new NoteModel( "Note "+i, "Just for test: Here is Note "+i);
+            //    _allLocalNotes.Add(note);
+                
+            //}
+            LocalNoteRepo.ReadNoteToFile();
+
+            LocalNoteRepo.notes= _allLocalNotes;
+
+            //foreach (NoteModel savedFile in LocalNoteRepo.notes)
+            //{
+            //    _allLocalNotes.Add(savedFile);
+            //}
+
             PerformFiltering();
         }
+
+        public void Add (string title,string content){
+            NoteModel note = new NoteModel( title, content );   
+            _allLocalNotes.Add (note);
+            PerformFiltering();
+            
+
+        }
+        
+        //public LocalNoteViewModel(string Title,string Content) {
+        //    AddCommand = new AddCommand(this);
+        //    NoteModel note = new NoteModel(Title, Content);
+        //    _allLocalNotes.Add(note);
+        //    PerformFiltering();
+        //}
+
 
         public NoteModel SelectedNote
         {
@@ -45,7 +89,7 @@ namespace LocalNote.ViewModels
                 _selectedNote = value;
                 if (value == null)
                 {
-                    Content = "Wrong";
+                    Content = null;
                 }
                 else
                 {
@@ -56,7 +100,7 @@ namespace LocalNote.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Title"));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Content"));
                 //Event to call the save functionality
-                //AcceptCommand.FireCanExecuteChanged();
+                AddCommand.FireCanExecuteChanged();
             }
            
         }

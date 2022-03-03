@@ -21,13 +21,17 @@
             <TextBlock Text="{x:Bind NoteTitle}"></TextBlock>
         </DataTemplate>
 
-        <CollectionViewSource x:Name="ContentCollection" 
-                              Source="{x:Bind LNViewModel.LocalNotes}"></CollectionViewSource>
-        <DataTemplate x:Name="ContentTemplate" x:DataType="models:NoteModel">
-            <TextBox Text="{x:Bind NoteContent}"></TextBox>
-        </DataTemplate>
     </Page.Resources>
-
+    <Page.BottomAppBar>
+        <CommandBar>
+           
+            <AppBarButton Icon="Accept" Label="Add Notes" Click="Add_Click"
+                          Command="{x:Bind LNViewModel.AddCommand}"></AppBarButton>
+            <AppBarButton Icon="Accept" Label="Save Changes" 
+                          Command="{x:Bind LNViewModel.SaveCommand}"></AppBarButton>
+            
+        </CommandBar>
+    </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="19*"/>
@@ -51,11 +55,9 @@
                 SelectedItem="{x:Bind LNViewModel.SelectedNote, Mode=TwoWay}"
                 ></ListView>
         </ScrollViewer>
-        <StackPanel Grid.Row="1" Grid.Column="1">
-            <TextBlock FontSize="32" 
-                       Text="{x:Bind LNViewModel.Content, Mode=TwoWay}"></TextBlock>
-            <TextBlock FontSize="20" Text="The following contacts are celebrating this name day"></TextBlock>
-        </StackPanel>
+        <TextBox x:Name="ContentBox"  FontSize="32" Grid.Row="1" Grid.Column="1" Margin="20" TextWrapping="Wrap" AcceptsReturn="True" Height="auto" Width="auto" 
+                       Text="{x:Bind LNViewModel.Content, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+           
 
     </Grid>
 </Page>

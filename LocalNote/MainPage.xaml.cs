@@ -28,6 +28,23 @@ namespace LocalNote
         {
             this.InitializeComponent();
             this.LNViewModel=new ViewModels.LocalNoteViewModel();
+            LNViewModel.MainPage=this;
+           
+
+
+        }
+
+        public string NoteContent
+        {
+            get { return ContentBox.Text; }
+
+            set { ContentBox.Text = value; }
+        
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            ContentBox.IsReadOnly = false;
         }
     }
 }
