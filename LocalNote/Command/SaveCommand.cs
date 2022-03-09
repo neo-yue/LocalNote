@@ -1,4 +1,5 @@
-﻿using LocalNote.ViewModels;
+﻿using LocalNote.Models;
+using LocalNote.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +17,7 @@ namespace LocalNote.Command
         private ViewModels.LocalNoteViewModel lnvm;
         public string savedTitle;
         public string savedContent;
+        public NoteModel newNote;
 
         public SaveCommand(ViewModels.LocalNoteViewModel lnvm) { 
         this.lnvm = lnvm;
@@ -36,19 +38,20 @@ namespace LocalNote.Command
             {
                 try
                 {
-                    Repositories.LocalNoteRepo.SaveNoteToFile(snd.NewTitle, "testContent");
-
                     savedTitle = snd.NewTitle;
-                    savedContent = "testContent";
-                    lnvm.Add(lnvm.SaveCommand.savedTitle, "testContent");
-                    //ContentDialog savedDialog = new ContentDialog()
-                    //{
-                    //    Title = "Save Successful",
-                    //    Content = "Names saved successfully to file, hurray!",
-                    //    PrimaryButtonText = "OK"
-                    //};
-                    //await savedDialog.ShowAsync();
-                    
+                    savedContent = lnvm.Content;
+                    Repositories.LocalNoteRepo.SaveNoteToFile(snd.NewTitle, savedContent);
+                    newNote = new NoteModel(snd.NewTitle, savedContent);
+                    lnvm.LocalNotes.Add(newNote);
+
+                    ContentDialog savedDialog = new ContentDialog()
+                    {
+                        Title = "Save Successful",
+                        Content = "Names saved successfully to file, hurray!",
+                        PrimaryButtonText = "OK"
+                    };
+                    await savedDialog.ShowAsync();
+
 
                 }
                 catch (Exception ex)

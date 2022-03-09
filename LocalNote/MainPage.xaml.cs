@@ -1,5 +1,7 @@
-﻿using System;
+﻿using LocalNote.Repositories;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -23,13 +25,12 @@ namespace LocalNote
     public sealed partial class MainPage : Page
     {
         public ViewModels.LocalNoteViewModel LNViewModel { get; set;}
-        
+       // LocalNoteRepo localNoteRepo { get; set; }
         public MainPage()
         {
             this.InitializeComponent();
             this.LNViewModel=new ViewModels.LocalNoteViewModel();
             LNViewModel.MainPage=this;
-           
 
 
         }
@@ -45,6 +46,11 @@ namespace LocalNote
         private void Add_Click(object sender, RoutedEventArgs e)
         {
             ContentBox.IsReadOnly = false;
+        }
+
+        public void textLock()
+        {
+            ContentBox.IsReadOnly = true;
         }
     }
 }

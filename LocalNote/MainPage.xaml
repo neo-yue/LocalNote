@@ -22,16 +22,19 @@
         </DataTemplate>
 
     </Page.Resources>
-    <Page.BottomAppBar>
+    <Page.TopAppBar>
         <CommandBar>
-           
-            <AppBarButton Icon="Accept" Label="Add Notes" Click="Add_Click"
+            <CommandBar.Content>
+                <TextBlock Text="{x:Bind LNViewModel.Title,Mode=TwoWay}" Margin="12,14"/>
+            </CommandBar.Content>
+            <AppBarButton Icon="Add" Label="Add Notes" Click="Add_Click"
                           Command="{x:Bind LNViewModel.AddCommand}"></AppBarButton>
-            <AppBarButton Icon="Accept" Label="Save Changes" 
+            <AppBarButton Icon="Save" Label="Save Changes" 
                           Command="{x:Bind LNViewModel.SaveCommand}"></AppBarButton>
-            
+            <AppBarButton Icon="Edit" Label="Edit Notes" />
+            <AppBarButton Icon="Delete" Label="Delete Notes"/>
         </CommandBar>
-    </Page.BottomAppBar>
+    </Page.TopAppBar>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="19*"/>
@@ -53,7 +56,7 @@
                 ItemsSource="{Binding Source={StaticResource TitleCollection}}"
                 ItemTemplate="{Binding Source={StaticResource TitleTemplate}}"
                 SelectedItem="{x:Bind LNViewModel.SelectedNote, Mode=TwoWay}"
-                ></ListView>
+                />
         </ScrollViewer>
         <TextBox x:Name="ContentBox"  FontSize="32" Grid.Row="1" Grid.Column="1" Margin="20" TextWrapping="Wrap" AcceptsReturn="True" Height="auto" Width="auto" 
                        Text="{x:Bind LNViewModel.Content, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
