@@ -1,4 +1,5 @@
-﻿using LocalNote.Repositories;
+﻿using LocalNote.Command;
+using LocalNote.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,7 +32,7 @@ namespace LocalNote
             this.InitializeComponent();
             this.LNViewModel=new ViewModels.LocalNoteViewModel();
             LNViewModel.MainPage=this;
-
+            
 
         }
 
@@ -43,6 +44,10 @@ namespace LocalNote
         
         }
 
+        public void CleanTextbox() {
+            ContentBox.Text = "";
+        }
+
         private void Add_Click(object sender, RoutedEventArgs e)
         {
             ContentBox.IsReadOnly = false;
@@ -51,6 +56,14 @@ namespace LocalNote
         public void textLock()
         {
             ContentBox.IsReadOnly = true;
+        }
+        public void textUnlock() {
+            ContentBox.IsReadOnly = false;
+        }
+
+        public bool textboxStatus() { 
+            
+            return ContentBox.IsReadOnly;
         }
     }
 }

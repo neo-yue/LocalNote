@@ -25,14 +25,19 @@
     <Page.TopAppBar>
         <CommandBar>
             <CommandBar.Content>
-                <TextBlock Text="{x:Bind LNViewModel.Title,Mode=TwoWay}" Margin="12,14"/>
+                <TextBlock Text="{x:Bind LNViewModel.Title,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="12,14"/>
             </CommandBar.Content>
-            <AppBarButton Icon="Add" Label="Add Notes" Click="Add_Click"
+            <AppBarButton Icon="Add" Label="Add Notes" 
                           Command="{x:Bind LNViewModel.AddCommand}"></AppBarButton>
             <AppBarButton Icon="Save" Label="Save Changes" 
                           Command="{x:Bind LNViewModel.SaveCommand}"></AppBarButton>
             <AppBarButton Icon="Edit" Label="Edit Notes" />
             <AppBarButton Icon="Delete" Label="Delete Notes"/>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton  Label="About" />
+                <AppBarButton  Label="Exit" />
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.TopAppBar>
     <Grid>

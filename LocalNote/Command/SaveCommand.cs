@@ -18,6 +18,7 @@ namespace LocalNote.Command
         public string savedTitle;
         public string savedContent;
         public NoteModel newNote;
+        public MainPage MainPage { get; set; }
 
         public SaveCommand(ViewModels.LocalNoteViewModel lnvm) { 
         this.lnvm = lnvm;
@@ -25,7 +26,7 @@ namespace LocalNote.Command
 
         public bool CanExecute(object parameter)
         {
-            return lnvm.AddCommand.addActivity;
+            return !lnvm.textboxStatus();
 
         }
 
@@ -51,7 +52,8 @@ namespace LocalNote.Command
                         PrimaryButtonText = "OK"
                     };
                     await savedDialog.ShowAsync();
-
+                    
+                    lnvm.Refresh(newNote);
 
                 }
                 catch (Exception ex)

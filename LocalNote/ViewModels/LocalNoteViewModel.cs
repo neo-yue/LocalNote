@@ -30,7 +30,7 @@ namespace LocalNote.ViewModels
        // private string _content;    
         public string Title { get; set; }
         
-
+       
 
         private string _content;
 
@@ -45,35 +45,30 @@ namespace LocalNote.ViewModels
         private List<NoteModel> _allLocalNotes = new List<NoteModel>();
         private NoteModel _selectedNote;
 
+        public void Refresh(NoteModel newNote) {
 
+            _selectedNote = newNote;
+            SelectedNote = _selectedNote;
+        }
 
         public LocalNoteViewModel() {
 
             AddCommand = new AddCommand(this);
             SaveCommand = new SaveCommand(this);
             LocalNotes=new ObservableCollection<NoteModel>();
-
-
-
-            // Repositories.LocalNoteRepo.ReadNoteToFile(_allLocalNotes);
-            //Task.Run(() => {
-            //    Thread.Sleep(5000);
-            //    PerformFiltering();
-            //});
             _allLocalNotes= LocalNoteRepo.ReadNote();
             
             PerformFiltering();
 
         }
 
-        public void Add (string title,string content){
-            NoteModel note = new NoteModel( title, content );   
-            _allLocalNotes.Add (note);
-            PerformFiltering();
-            
+        public bool textboxStatus()
+        {
 
+            return MainPage.textboxStatus();
         }
-        
+
+
 
         public NoteModel SelectedNote
         {
@@ -81,10 +76,12 @@ namespace LocalNote.ViewModels
             set
             {
                 _selectedNote = value;
+                
                 if (value == null)
                 {
-                    Content = null;
-                    MainPage.NoteContent = null;
+                    MainPage.CleanTextbox();
+                    Title = "Untitiled Note";
+                   
                     
                 }
                 else
@@ -96,8 +93,10 @@ namespace LocalNote.ViewModels
                 }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Title"));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Content"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("_selectedNote"));
                 //Event to call the save functionality
                 AddCommand.FireCanExecuteChanged();
+                SaveCommand.FireCanExecuteChanged();
             }
            
         }
