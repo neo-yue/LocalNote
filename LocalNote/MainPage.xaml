@@ -28,15 +28,15 @@
                 <TextBlock Text="{x:Bind LNViewModel.Title,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="12,14" />
             </CommandBar.Content>
             <AppBarButton Icon="Add" Label="Add Notes" 
-                          Command="{x:Bind LNViewModel.AddCommand}"></AppBarButton>
+                          Command="{x:Bind LNViewModel.AddCommand}"/>
             <AppBarButton Icon="Save" Label="Save Changes" 
-                          Command="{x:Bind LNViewModel.SaveCommand}"></AppBarButton>
+                          Command="{x:Bind LNViewModel.SaveCommand}"/>
             <AppBarButton Icon="Edit" Label="Edit Notes" Command="{x:Bind LNViewModel.EditCommand}"/>
-            <AppBarButton Icon="Delete" Label="Delete Notes"/>
+            <AppBarButton Icon="Delete" Label="Delete Notes"  Command="{x:Bind LNViewModel.DeleteCommand}"/>
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton  Label="About" />
-                <AppBarButton  Label="Exit" />
+                <AppBarButton  Label="Exit" Command="{x:Bind LNViewModel.ExitCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.TopAppBar>

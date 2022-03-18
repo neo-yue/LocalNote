@@ -38,17 +38,7 @@ namespace LocalNote.Command
             {
                 savedTitle = lnvm.Title;                 //Get the content and title of the selected note               
                 savedContent = lnvm.Content;
-                LocalNoteRepo.EditToFile(savedTitle, savedContent);         //save the new content 
-                
-                ContentDialog editDialog = new ContentDialog()
-                {
-                    Title = "Save Successful",
-                    Content = lnvm.Title + " content has been updated!",
-                    PrimaryButtonText = "OK"
-                };
-                await editDialog.ShowAsync();
-
-
+                await LocalNoteRepo.EditToFile(savedTitle, savedContent);         //save the new content 
                 editNewNote?.Invoke(this, new EventArgs());             //trager the editNewNote event
 
 

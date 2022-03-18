@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace LocalNote.Command
 {
-    internal class EditCommand : ICommand
+    public class EditCommand : ICommand
     {
         private ViewModels.LocalNoteViewModel lnvm;
         

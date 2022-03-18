@@ -21,9 +21,10 @@ namespace LocalNote.ViewModels
         
         public AddCommand AddCommand { get; }      //use to add new to a file    
         public SaveCommand SaveCommand { get; }   //used to save a note to a file
-        internal EditCommand EditCommand { get; }  //used to edit the selected note 
+        public EditCommand EditCommand { get; }  //used to edit the selected note 
+        public DeleteCommand DeleteCommand { get; } //used to delete the sellected note
 
-
+        public ExitCommand ExitCommand { get; }
         public ObservableCollection<NoteModel> LocalNotes { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -47,7 +48,7 @@ namespace LocalNote.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));    
         }
 
-        public void updateNote(object sender, EventArgs e)                      //update note content after edit
+        public void UpdateNote(object sender, EventArgs e)                      //update note content after edit
         {
             SelectedNote.NoteContent = MainPage.NoteContent;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));
@@ -62,16 +63,28 @@ namespace LocalNote.ViewModels
             }
         }
 
+        public void DeleteSellected(object sender, EventArgs e)
+        {                       
+            _allLocalNotes.Remove(SelectedNote);
+            PerformFiltering();
+            SelectedNote = null;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));
+        }
+
         public LocalNoteViewModel() {
 
             AddCommand = new AddCommand(this);
             SaveCommand = new SaveCommand(this);
             EditCommand = new EditCommand(this);  
-            LocalNotes=new ObservableCollection<NoteModel>();
+            DeleteCommand = new DeleteCommand(this);
+            ExitCommand = new ExitCommand();
+
+            LocalNotes =new ObservableCollection<NoteModel>();
             _allLocalNotes= LocalNoteRepo.LoadNote();
             SaveCommand.createdNewNote += AddNewNote;                       //Execute function after event is triggered
-            AddCommand.CancellSelected += UnSellected;
-            SaveCommand.editNewNote += updateNote;
+            AddCommand.UnSellected += UnSellected;
+            SaveCommand.editNewNote += UpdateNote;
+            DeleteCommand.DeleteSelected += DeleteSellected;
             PerformFiltering();
 
         }
@@ -94,7 +107,8 @@ namespace LocalNote.ViewModels
                 if (value == null)
                 {
                     MainPage.CleanTextbox();                //Clear the content in the content textbox when it is not selected, and set the title to Untitiled Note
-                    Title = "Untitiled Note";               
+                    Title = "Untitiled Note";
+                    MainPage.textUnlock();
                    
                     
                 }
@@ -111,6 +125,7 @@ namespace LocalNote.ViewModels
                 AddCommand.FireCanExecuteChanged();
                 SaveCommand.FireCanExecuteChanged();
                 EditCommand.FireCanExecuteChanged();
+                DeleteCommand.FireCanExecuteChanged();
             }
            
         }

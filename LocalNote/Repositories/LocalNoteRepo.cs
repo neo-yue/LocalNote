@@ -122,7 +122,7 @@ namespace LocalNote.Repositories
       
         }
         //Edit file content
-        public async static void EditToFile(string editTitle, string editContent)
+        public async static Task EditToFile(string editTitle, string editContent)
         {
             try
             {
@@ -130,7 +130,14 @@ namespace LocalNote.Repositories
                 Windows.Storage.StorageFile editNote =
                 await noteFolder.GetFileAsync(editTitle);
                 await FileIO.WriteTextAsync(editNote, editContent);
-              
+                ContentDialog editDialog = new ContentDialog()
+                {
+                    Title = "Save Successful",
+                    Content = editTitle + " content has been updated!",
+                    PrimaryButtonText = "OK"
+                };
+                await editDialog.ShowAsync();
+
             }
             catch (Exception ex)
             {
@@ -148,6 +155,24 @@ namespace LocalNote.Repositories
             }
 
         }
+        //Delete file
+        public async static void DeleteNote(string title) {
+            try
+            {                                                   
+                StorageFile deleteFile = await noteFolder.GetFileAsync(title);
+                await deleteFile.DeleteAsync();
+            }
+            catch (Exception ex)
+            {
+                ContentDialog errorDialog = new ContentDialog
+                {
+                    Title = "Error Delete File",
+                    Content = "There was an error deleted the file, please try again",
+                    PrimaryButtonText = "OK"
+                };
+            }
+        }
+
     }    
 
 }

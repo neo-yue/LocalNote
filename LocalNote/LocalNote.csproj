@@ -119,10 +119,15 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Command\DeleteCommand.cs" />
     <Compile Include="Command\EditCommand.cs" />
+    <Compile Include="Command\ExitCommand.cs" />
     <Compile Include="Command\SaveCommand.cs" />
+    <Compile Include="Dialog\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Repositories\LocalNoteRepo.cs" />
-    <Compile Include="SaveCommandDialog.xaml.cs">
+    <Compile Include="Dialog\SaveCommandDialog.xaml.cs">
       <DependentUpon>SaveCommandDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Command\AddCommand.cs" />
@@ -153,7 +158,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="SaveCommandDialog.xaml">
+    <Page Include="Dialog\AboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog\SaveCommandDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
