@@ -15,7 +15,6 @@ namespace LocalNote
         public event EventHandler CanExecuteChanged;
         private ViewModels.LocalNoteViewModel lnvm;
         public event EventHandler CancellSelected;
-        //public bool addActivity=false;
 
         public AddCommand(ViewModels.LocalNoteViewModel lnvm) { 
             this.lnvm = lnvm;
@@ -29,9 +28,9 @@ namespace LocalNote
         public  void Execute(object parameter)
         {
          
-            lnvm.MainPage.textUnlock();
-            lnvm.SaveCommand.FireCanExecuteChanged();
-            CancellSelected?.Invoke(this, EventArgs.Empty);
+            lnvm.MainPage.textUnlock();                         //unlock textbox
+            lnvm.SaveCommand.FireCanExecuteChanged();           //Change the executable of savecommand
+            CancellSelected?.Invoke(this, EventArgs.Empty);         //trigger Cancellselected event
         }
 
         public void FireCanExecuteChanged()

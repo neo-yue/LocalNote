@@ -15,6 +15,11 @@ namespace LocalNote.Command
         
         public event EventHandler CanExecuteChanged;
 
+        public EditCommand(ViewModels.LocalNoteViewModel lnvm)
+        {
+            this.lnvm = lnvm;
+        }
+
         public bool CanExecute(object parameter)
         {
             return lnvm.textboxStatus();
@@ -22,10 +27,15 @@ namespace LocalNote.Command
 
         public void Execute(object parameter)
         {
-            lnvm.MainPage.textUnlock();
-            //lnvm.SaveCommand.FireCanExecuteChanged();
-           // LocalNoteRepo.EditToFile();
+            lnvm.MainPage.textUnlock();                      //unlock textbox
+            lnvm.SaveCommand.FireCanExecuteChanged();        //Change the executable of savecommand
+            lnvm.EditCommand.FireCanExecuteChanged();        //Change the executable of editcoomand 
 
+        }
+
+        public void FireCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

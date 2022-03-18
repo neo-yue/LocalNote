@@ -19,15 +19,14 @@ namespace LocalNote.ViewModels
     {
         public MainPage MainPage { get; set; }
         
-        public AddCommand AddCommand { get; }
-        public SaveCommand SaveCommand { get; } 
+        public AddCommand AddCommand { get; }      //use to add new to a file    
+        public SaveCommand SaveCommand { get; }   //used to save a note to a file
+        internal EditCommand EditCommand { get; }  //used to edit the selected note 
 
-       // public LocalNoteRepo localNoteRepo { get; }
 
         public ObservableCollection<NoteModel> LocalNotes { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
-       // private string _content;    
         public string Title { get; set; }
         
        
@@ -38,22 +37,24 @@ namespace LocalNote.ViewModels
 
         
 
-        private string _filter;
+        private string _filter;                                          //Private property is used to store filter key word 
 
-        // private ObservableCollection<NoteModel> _allLocalNotes = new ObservableCollection<NoteModel>();
-
-        private List<NoteModel> _allLocalNotes = new List<NoteModel>();
+        private List<NoteModel> _allLocalNotes = new List<NoteModel>();  //Private property is used to store all notes
         private NoteModel _selectedNote;
 
-        public void Refresh(object sender, EventArgs e) {
-
-           // _selectedNote = null;
-            //SelectedNote = _selectedNote;
+        public void UnSellected(object sender, EventArgs e) {                       //Unsellected Note
             SelectedNote = null;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));    
         }
 
-        public void AddNewNote(object sender, EventArgs e) {
+        public void updateNote(object sender, EventArgs e)                      //update note content after edit
+        {
+            SelectedNote.NoteContent = MainPage.NoteContent;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));
+
+        }
+
+        public void AddNewNote(object sender, EventArgs e) {            // add new note to _allLocalNotes
             if (SaveCommand.newNote != null) { 
             _allLocalNotes.Add(SaveCommand.newNote);
             PerformFiltering();
@@ -65,23 +66,25 @@ namespace LocalNote.ViewModels
 
             AddCommand = new AddCommand(this);
             SaveCommand = new SaveCommand(this);
+            EditCommand = new EditCommand(this);  
             LocalNotes=new ObservableCollection<NoteModel>();
-            _allLocalNotes= LocalNoteRepo.ReadNote();
-            SaveCommand.createdNewNote += AddNewNote;
-            AddCommand.CancellSelected += Refresh;
+            _allLocalNotes= LocalNoteRepo.LoadNote();
+            SaveCommand.createdNewNote += AddNewNote;                       //Execute function after event is triggered
+            AddCommand.CancellSelected += UnSellected;
+            SaveCommand.editNewNote += updateNote;
             PerformFiltering();
 
         }
 
-        public bool textboxStatus()
+        public bool textboxStatus()         //Editability of content textbox
         {
 
-            return MainPage.textboxStatus();
+            return MainPage.textboxStatus();        
         }
 
 
 
-        public NoteModel SelectedNote
+        public NoteModel SelectedNote       //Two-Way bound to currently selected note
         {
             get { return _selectedNote; }
             set
@@ -90,29 +93,29 @@ namespace LocalNote.ViewModels
                 
                 if (value == null)
                 {
-                    MainPage.CleanTextbox();
-                    Title = "Untitiled Note";
+                    MainPage.CleanTextbox();                //Clear the content in the content textbox when it is not selected, and set the title to Untitiled Note
+                    Title = "Untitiled Note";               
                    
                     
                 }
                 else
                 {
-                    Title = value.NoteTitle;
-
-                    _content = value.NoteContent;
+                    Title = value.NoteTitle;                
+                     _content = value.NoteContent;
                     MainPage.textLock();
                 }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Title"));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Content"));
-               
-                //Event to call the save functionality
+
+                //Check the executable of all commands
                 AddCommand.FireCanExecuteChanged();
                 SaveCommand.FireCanExecuteChanged();
+                EditCommand.FireCanExecuteChanged();
             }
            
         }
 
-        public string Filter
+        public string Filter                //that's Two-Way bound to search bar
         {
             get { return _filter; }
             set

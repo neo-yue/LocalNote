@@ -26,16 +26,17 @@ namespace LocalNote
     public sealed partial class MainPage : Page
     {
         public ViewModels.LocalNoteViewModel LNViewModel { get; set;}
-       // LocalNoteRepo localNoteRepo { get; set; }
+       
         public MainPage()
         {
             this.InitializeComponent();
             this.LNViewModel=new ViewModels.LocalNoteViewModel();
-            LNViewModel.MainPage=this;
             
+            //bind mainpage to  LNViewModel
+            LNViewModel.MainPage=this;
+            }
 
-        }
-
+        //Get and assign value to textbox
         public string NoteContent
         {
             get { return ContentBox.Text; }
@@ -44,23 +45,23 @@ namespace LocalNote
         
         }
 
+        //Clean the textbox
         public void CleanTextbox() {
             ContentBox.Text = "";
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
-        {
-            ContentBox.IsReadOnly = false;
-        }
-
+        //Lock textbox
         public void textLock()
         {
             ContentBox.IsReadOnly = true;
         }
+        
+        //Unlock textbox
         public void textUnlock() {
             ContentBox.IsReadOnly = false;
         }
 
+        //Returns the editability of the textbox
         public bool textboxStatus() { 
             
             return ContentBox.IsReadOnly;

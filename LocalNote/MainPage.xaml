@@ -25,13 +25,13 @@
     <Page.TopAppBar>
         <CommandBar>
             <CommandBar.Content>
-                <TextBlock Text="{x:Bind LNViewModel.Title,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="12,14"/>
+                <TextBlock Text="{x:Bind LNViewModel.Title,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="12,14" />
             </CommandBar.Content>
             <AppBarButton Icon="Add" Label="Add Notes" 
                           Command="{x:Bind LNViewModel.AddCommand}"></AppBarButton>
             <AppBarButton Icon="Save" Label="Save Changes" 
                           Command="{x:Bind LNViewModel.SaveCommand}"></AppBarButton>
-            <AppBarButton Icon="Edit" Label="Edit Notes" />
+            <AppBarButton Icon="Edit" Label="Edit Notes" Command="{x:Bind LNViewModel.EditCommand}"/>
             <AppBarButton Icon="Delete" Label="Delete Notes"/>
 
             <CommandBar.SecondaryCommands>
@@ -53,7 +53,7 @@
         <TextBox x:Name="FilterTextbox" 
                  Text="{x:Bind LNViewModel.Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  PlaceholderText="Search note here..."
-                 FontSize="24" Margin="10" Height="60"
+                 BorderThickness="5"
                  Grid.Row="0" Grid.Column="0"/>
 
         <ScrollViewer Grid.Row="1" Grid.Column="0">

@@ -16,16 +16,22 @@ namespace LocalNote.Repositories
 
     public class LocalNoteRepo
     {
+
+        //The path of the package is used to read the file
         private static string _basepath = @"C:\Users\Administrator\AppData\Local\Packages\7f68f349-8a6c-4585-9cda-a5b8d368e038_75cr2b68sm664\LocalState";
         private static string[] _strDataFiles = Directory.GetFiles(_basepath); 
 
         private static StorageFolder noteFolder = ApplicationData.Current.LocalFolder;
 
+        //Used to determine whether the storage fails due to the same name
         public static bool saveStatus=false;
+
+        //Dynamically store files
         public async static void SaveNoteToFile(string NewTitle, string NewContent)
         {
             try
             {
+                //Store files without duplicate names
                 if (CheckNoteTitle(NewTitle))
                 {
                     saveStatus = true;
@@ -35,6 +41,8 @@ namespace LocalNote.Repositories
                    
                 }
                 else {
+                    //Alert users when the name is duplicated
+
                     saveStatus = false;
                     ContentDialog savedDialog = new ContentDialog()
                     {
@@ -49,45 +57,71 @@ namespace LocalNote.Repositories
             }
             catch (Exception ex)
             {
+                //Alert user when storage fails
+                ContentDialog errorDialog = new ContentDialog
+                {
+                    Title = "Error Saving File",
+                    Content = "There was an error saving the file, please try again",
+                    PrimaryButtonText = "OK"
+                };
                 Debug.WriteLine("Oh noes! An error occurred with file writing. Ahhhhh!");
             }
 
         }
 
-        public static List<NoteModel> ReadNote() {
+        //read file on initialization
+        public static List<NoteModel> LoadNote() {
             List < NoteModel > Notes=new List<NoteModel>();
-            
-            foreach (string file in _strDataFiles)
+            try
             {
-                StreamReader sr = new StreamReader(file, Encoding.Default);
-                string content="";
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                foreach (string file in _strDataFiles)
                 {
-                   content+=line;
+                    StreamReader sr = new StreamReader(file, Encoding.Default);
+                    string content = "";
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        content += line;
+                    }
+
+                    NoteModel note = new NoteModel(Path.GetFileName(file), content);
+                    Notes.Add(note);
+
                 }
-
-                NoteModel note = new NoteModel(Path.GetFileName(file), content);
-                Notes.Add(note);
-
+                return Notes;
             }
-            return Notes;
+            catch {
+
+                Debug.WriteLine("Could not open the folder, please check the folder path ");
+                return null;
+            }
         }
 
+        //Check if the file has the same name
         public static bool CheckNoteTitle(string title) {
 
-            foreach (string file in _strDataFiles)
+            try
             {
-                StreamReader sr = new StreamReader(file, Encoding.Default);
+                foreach (string file in _strDataFiles)
+                {
+                    StreamReader sr = new StreamReader(file, Encoding.Default);
 
-                if (Path.GetFileName(file) == title)
-                    return false;
-            
-            
+                    if (Path.GetFileName(file) == title)
+                        return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine("Could not open the folder, please check the folder path ");
+                return false;
             }
 
-            return true;
+      
         }
+        //Edit file content
         public async static void EditToFile(string editTitle, string editContent)
         {
             try
@@ -96,14 +130,21 @@ namespace LocalNote.Repositories
                 Windows.Storage.StorageFile editNote =
                 await noteFolder.GetFileAsync(editTitle);
                 await FileIO.WriteTextAsync(editNote, editContent);
-
-
-
-
+              
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Oh noes! An error occurred with no file with title "+ editTitle+" found!");
+                //Alert users when files are occupied
+                ContentDialog errorDialog = new ContentDialog
+                {
+                    Title = "Error Saving File",
+                    Content = "There was an error saving the file, please try again",
+                    PrimaryButtonText = "OK"
+                };
+
+                await errorDialog.ShowAsync();
+
+                Debug.WriteLine(editTitle+" is in use and the update failed");
             }
 
         }

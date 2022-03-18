@@ -1,4 +1,5 @@
 ﻿using LocalNote.Models;
+using LocalNote.Repositories;
 using LocalNote.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,9 @@ namespace LocalNote.Command
         public string savedTitle;
         public string savedContent;
         public NoteModel newNote;
-        //public MainPage MainPage { get; set; }
+       
         public event EventHandler createdNewNote;
-
+        public event EventHandler editNewNote;
         public SaveCommand(ViewModels.LocalNoteViewModel lnvm) { 
         this.lnvm = lnvm;
         }
@@ -33,41 +34,65 @@ namespace LocalNote.Command
 
         public async void Execute(object parameter)
         {
-            SaveCommandDialog snd = new SaveCommandDialog();
-            ContentDialogResult result = await snd.ShowAsync();
-            
-            if (result == ContentDialogResult.Primary)
+            if (lnvm.SelectedNote != null)              //edit mode
             {
-                try
+                savedTitle = lnvm.Title;                 //Get the content and title of the selected note               
+                savedContent = lnvm.Content;
+                LocalNoteRepo.EditToFile(savedTitle, savedContent);         //save the new content 
+                
+                ContentDialog editDialog = new ContentDialog()
                 {
-                    savedTitle = snd.NewTitle;
-                    savedContent = lnvm.Content;
-                    Repositories.LocalNoteRepo.SaveNoteToFile(snd.NewTitle, savedContent);
+                    Title = "Save Successful",
+                    Content = lnvm.Title + " content has been updated!",
+                    PrimaryButtonText = "OK"
+                };
+                await editDialog.ShowAsync();
 
-                    if (Repositories.LocalNoteRepo.saveStatus)
+
+                editNewNote?.Invoke(this, new EventArgs());             //trager the editNewNote event
+
+
+            }
+            else
+            {                                                   //save mode
+
+                SaveCommandDialog snd = new SaveCommandDialog();
+                ContentDialogResult result = await snd.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)          //after confirm storage
+                {
+                    try
                     {
-                        newNote = new NoteModel(snd.NewTitle, savedContent);
-                        createdNewNote?.Invoke(this, EventArgs.Empty);
 
-                        //lnvm.LocalNotes.Add(newNote);
-                        //lnvm.Refresh(newNote);
-                        ContentDialog savedDialog = new ContentDialog()
+
+                        savedTitle = snd.NewTitle;                  //save the new title and new content 
+                        savedContent = lnvm.Content;
+                        LocalNoteRepo.SaveNoteToFile(snd.NewTitle, savedContent);
+
+                        if (LocalNoteRepo.saveStatus)
                         {
-                            Title = "Save Successful",
-                            Content = "Names saved successfully to file, hurray!",
-                            PrimaryButtonText = "OK"
-                        };
-                        await savedDialog.ShowAsync();
+                            newNote = new NoteModel(snd.NewTitle, savedContent);
+                            createdNewNote?.Invoke(this, EventArgs.Empty);
+
+                            ContentDialog savedDialog = new ContentDialog()
+                            {
+                                Title = "Save Successful",
+                                Content = "Names saved successfully to file, hurray!",
+                                PrimaryButtonText = "OK"
+                            };
+                            await savedDialog.ShowAsync();
+                        }
+
+
+
                     }
-                    
-                    
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error when saving to file");
+                    }
 
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Error when saving to file");
-                }
-            }   
+            }
         }
         public void FireCanExecuteChanged()
         {
