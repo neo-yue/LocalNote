@@ -14,7 +14,7 @@ namespace LocalNote
     {
         public event EventHandler CanExecuteChanged;
         private ViewModels.LocalNoteViewModel lnvm;
-
+        public event EventHandler CancellSelected;
         //public bool addActivity=false;
 
         public AddCommand(ViewModels.LocalNoteViewModel lnvm) { 
@@ -28,18 +28,10 @@ namespace LocalNote
 
         public  void Execute(object parameter)
         {
-           // addActivity = true;
+         
             lnvm.MainPage.textUnlock();
             lnvm.SaveCommand.FireCanExecuteChanged();
-            //lnvm.MainPage.CleanTextbox();
-            //lnvm.deselected();
-            lnvm.Refresh(null);
-            //lnvm.MainPage.CleanTextbox();
-            //lnvm.Title = "Untitiled Note";
-
-            //lnvm.MainPage.CleanTextbox();
-            //Debug.WriteLine("Oh noes! An error occurred with file writing. Ahhhhh!");
-
+            CancellSelected?.Invoke(this, EventArgs.Empty);
         }
 
         public void FireCanExecuteChanged()

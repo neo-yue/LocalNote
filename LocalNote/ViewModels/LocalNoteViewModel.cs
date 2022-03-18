@@ -45,10 +45,20 @@ namespace LocalNote.ViewModels
         private List<NoteModel> _allLocalNotes = new List<NoteModel>();
         private NoteModel _selectedNote;
 
-        public void Refresh(NoteModel newNote) {
+        public void Refresh(object sender, EventArgs e) {
 
-            _selectedNote = newNote;
-            SelectedNote = _selectedNote;
+           // _selectedNote = null;
+            //SelectedNote = _selectedNote;
+            SelectedNote = null;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));
+        }
+
+        public void AddNewNote(object sender, EventArgs e) {
+            if (SaveCommand.newNote != null) { 
+            _allLocalNotes.Add(SaveCommand.newNote);
+            PerformFiltering();
+
+            }
         }
 
         public LocalNoteViewModel() {
@@ -57,7 +67,8 @@ namespace LocalNote.ViewModels
             SaveCommand = new SaveCommand(this);
             LocalNotes=new ObservableCollection<NoteModel>();
             _allLocalNotes= LocalNoteRepo.ReadNote();
-            
+            SaveCommand.createdNewNote += AddNewNote;
+            AddCommand.CancellSelected += Refresh;
             PerformFiltering();
 
         }
@@ -93,7 +104,7 @@ namespace LocalNote.ViewModels
                 }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Title"));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Content"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("_selectedNote"));
+               
                 //Event to call the save functionality
                 AddCommand.FireCanExecuteChanged();
                 SaveCommand.FireCanExecuteChanged();

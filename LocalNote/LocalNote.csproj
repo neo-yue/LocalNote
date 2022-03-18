@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Command\EditCommand.cs" />
     <Compile Include="Command\SaveCommand.cs" />
     <Compile Include="Repositories\LocalNoteRepo.cs" />
     <Compile Include="SaveCommandDialog.xaml.cs">

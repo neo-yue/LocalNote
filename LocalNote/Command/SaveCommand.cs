@@ -18,7 +18,8 @@ namespace LocalNote.Command
         public string savedTitle;
         public string savedContent;
         public NoteModel newNote;
-        public MainPage MainPage { get; set; }
+        //public MainPage MainPage { get; set; }
+        public event EventHandler createdNewNote;
 
         public SaveCommand(ViewModels.LocalNoteViewModel lnvm) { 
         this.lnvm = lnvm;
@@ -42,18 +43,24 @@ namespace LocalNote.Command
                     savedTitle = snd.NewTitle;
                     savedContent = lnvm.Content;
                     Repositories.LocalNoteRepo.SaveNoteToFile(snd.NewTitle, savedContent);
-                    newNote = new NoteModel(snd.NewTitle, savedContent);
-                    lnvm.LocalNotes.Add(newNote);
 
-                    ContentDialog savedDialog = new ContentDialog()
+                    if (Repositories.LocalNoteRepo.saveStatus)
                     {
-                        Title = "Save Successful",
-                        Content = "Names saved successfully to file, hurray!",
-                        PrimaryButtonText = "OK"
-                    };
-                    await savedDialog.ShowAsync();
+                        newNote = new NoteModel(snd.NewTitle, savedContent);
+                        createdNewNote?.Invoke(this, EventArgs.Empty);
+
+                        //lnvm.LocalNotes.Add(newNote);
+                        //lnvm.Refresh(newNote);
+                        ContentDialog savedDialog = new ContentDialog()
+                        {
+                            Title = "Save Successful",
+                            Content = "Names saved successfully to file, hurray!",
+                            PrimaryButtonText = "OK"
+                        };
+                        await savedDialog.ShowAsync();
+                    }
                     
-                    lnvm.Refresh(newNote);
+                    
 
                 }
                 catch (Exception ex)

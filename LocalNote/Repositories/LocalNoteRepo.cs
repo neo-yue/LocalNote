@@ -9,30 +9,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml.Controls;
 
 namespace LocalNote.Repositories
 {
 
     public class LocalNoteRepo
     {
-        //private static List<NoteModel> _Notes=new List<NoteModel>();
-
-        //public List<NoteModel> Notes { get { return _Notes; } }
-        //    public LocalNoteRepo(){
-        //        this.Notes=new List<NoteModel>();
-
-        //}
+        private static string _basepath = @"C:\Users\Administrator\AppData\Local\Packages\7f68f349-8a6c-4585-9cda-a5b8d368e038_75cr2b68sm664\LocalState";
+        private static string[] _strDataFiles = Directory.GetFiles(_basepath); 
 
         private static StorageFolder noteFolder = ApplicationData.Current.LocalFolder;
 
+        public static bool saveStatus=false;
         public async static void SaveNoteToFile(string NewTitle, string NewContent)
         {
             try
             {
-                StorageFile newNote = await noteFolder.CreateFileAsync(NewTitle,
-                    CreationCollisionOption.OpenIfExists);
-                await Windows.Storage.FileIO.AppendTextAsync(newNote, NewContent);
+                if (CheckNoteTitle(NewTitle))
+                {
+                    saveStatus = true;
+                    StorageFile newNote = await noteFolder.CreateFileAsync(NewTitle,
+                        CreationCollisionOption.OpenIfExists);
+                    await Windows.Storage.FileIO.AppendTextAsync(newNote, NewContent);
+                   
+                }
+                else {
+                    saveStatus = false;
+                    ContentDialog savedDialog = new ContentDialog()
+                    {
+                        Title = "Save Unsuccessful",
+                        Content = "There is already a file with the same name",
+                        PrimaryButtonText = "OK"
+                    };
+                    await savedDialog.ShowAsync();
 
+                }
 
             }
             catch (Exception ex)
@@ -41,41 +53,11 @@ namespace LocalNote.Repositories
             }
 
         }
-        public async static void ReadNoteToFile(List<NoteModel> Notes)
-        {
-            
-            //try
-            //{
-            
-                IReadOnlyList<StorageFile> fileList = await noteFolder.GetFilesAsync();
-
-            //    foreach (StorageFile file in fileList)
-            //    {
-            //        NoteModel note = new NoteModel(file.Name, await Windows.Storage.FileIO.ReadTextAsync(file));
-            //        Debug.WriteLine(note.NoteContent);
-            //        Notes.Add(note);
-
-            //    }
-            //    Debug.WriteLine(Notes.Count);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine("Oh noes!222222");
-            //}
-            foreach (StorageFile file in fileList)
-            {
-                NoteModel note = new NoteModel(file.DisplayName,"");
-                Notes.Add(note);
-
-            }
-            
-        }
 
         public static List<NoteModel> ReadNote() {
             List < NoteModel > Notes=new List<NoteModel>();
-            string basepath = @"C:\Users\Administrator\AppData\Local\Packages\7f68f349-8a6c-4585-9cda-a5b8d368e038_75cr2b68sm664\LocalState";
-            string[] strDataFiles = Directory.GetFiles(basepath);
-            foreach (string file in strDataFiles)
+            
+            foreach (string file in _strDataFiles)
             {
                 StreamReader sr = new StreamReader(file, Encoding.Default);
                 string content="";
@@ -91,5 +73,40 @@ namespace LocalNote.Repositories
             }
             return Notes;
         }
+
+        public static bool CheckNoteTitle(string title) {
+
+            foreach (string file in _strDataFiles)
+            {
+                StreamReader sr = new StreamReader(file, Encoding.Default);
+
+                if (Path.GetFileName(file) == title)
+                    return false;
+            
+            
+            }
+
+            return true;
+        }
+        public async static void EditToFile(string editTitle, string editContent)
+        {
+            try
+            {
+
+                Windows.Storage.StorageFile editNote =
+                await noteFolder.GetFileAsync(editTitle);
+                await FileIO.WriteTextAsync(editNote, editContent);
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Oh noes! An error occurred with no file with title "+ editTitle+" found!");
+            }
+
+        }
     }    
+
 }
