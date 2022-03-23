@@ -86,9 +86,10 @@ namespace LocalNote.Repositories
 
                     NoteModel note = new NoteModel(Path.GetFileName(file), content);
                     Notes.Add(note);
-
+                    sr.Close();
                 }
                 return Notes;
+               
             }
             catch {
 

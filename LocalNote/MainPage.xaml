@@ -13,14 +13,13 @@
     <Page.DataContext>
         <viewmodels:LocalNoteViewModel/>
     </Page.DataContext>
-
+    
     <Page.Resources>
         <CollectionViewSource x:Name="TitleCollection" 
                               Source="{x:Bind LNViewModel.LocalNotes}"></CollectionViewSource>
         <DataTemplate x:Name="TitleTemplate" x:DataType="models:NoteModel">
             <TextBlock Text="{x:Bind NoteTitle}"></TextBlock>
         </DataTemplate>
-
     </Page.Resources>
     <Page.TopAppBar>
         <CommandBar>
@@ -35,7 +34,7 @@
             <AppBarButton Icon="Delete" Label="Delete Notes"  Command="{x:Bind LNViewModel.DeleteCommand}"/>
 
             <CommandBar.SecondaryCommands>
-                <AppBarButton  Label="About" />
+                <AppBarButton Label="About" ToolTipService.ToolTip="About" Click="AboutButton_Click" />
                 <AppBarButton  Label="Exit" Command="{x:Bind LNViewModel.ExitCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
