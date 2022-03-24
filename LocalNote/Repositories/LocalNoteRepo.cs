@@ -91,8 +91,8 @@ namespace LocalNote.Repositories
                 return Notes;
                
             }
-            catch {
-
+            catch (IOException ex){
+               
                 Debug.WriteLine("Could not open the folder, please check the folder path ");
                 return null;
             }
@@ -162,6 +162,7 @@ namespace LocalNote.Repositories
             {                                                   
                 StorageFile deleteFile = await noteFolder.GetFileAsync(title);
                 await deleteFile.DeleteAsync();
+
             }
             catch (Exception ex)
             {

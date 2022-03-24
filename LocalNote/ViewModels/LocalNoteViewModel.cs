@@ -29,8 +29,6 @@ namespace LocalNote.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Title { get; set; }
-        
-       
 
         private string _content;
 

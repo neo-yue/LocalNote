@@ -16,5 +16,17 @@ namespace LocalNote.Models
             NoteTitle = noteTitle;
             NoteContent = noteContent;
         }
+
+        //that function only use for unit test
+        List<NoteModel> List { get; set;} = new List<NoteModel>();
+        public static String getContent(List<NoteModel> List,String title) {
+
+            foreach (var item in List) {
+                if (item.NoteTitle == title) {
+                    return item.NoteContent;
+                }
+            }
+            return null;
+        }
     }
 }
