@@ -28,5 +28,19 @@ namespace LocalNote.Models
             }
             return null;
         }
+        //that function only use for unit test
+        public static int countWords(List<NoteModel> List, String title)
+        {
+
+            foreach (var item in List)
+            {
+                if (item.NoteTitle == title)
+                {
+                    int count = item.NoteContent.Length;
+                    return count;
+                }
+            }
+            return 0;
+        }
     }
 }

@@ -15,6 +15,89 @@ namespace UnitTestProject
     [TestClass]
     public class UnitTest1
     {
+    
+        [TestMethod]
+        //Test connection database
+        public void SqliteConncetion()
+        {
+            bool callSuccessful = true;
+            try
+            {
+                LocalNoteSqlite.InitializeDB();
+            }
+            catch (Exception)
+            {
+                callSuccessful = false;
+            }
+            Assert.IsTrue(callSuccessful, "Successfully connected to the database");
+        }
+
+        [TestMethod]
+        //Test if the file exists in the search database
+        public void checkTitle()
+        {
+            String title = "testNewTitle";
+            bool result=LocalNoteSqlite.checkTitle(title);
+            //Note does not exist returns true
+            Assert.AreEqual(result, true);
+        }
+
+        [TestMethod]
+        //Test if the file exists in the search database
+        public void SqliteAddnote()
+        {
+            String title = "testTitle";
+            LocalNoteSqlite.AddNote(title, "content");
+            //If add note succefule return false
+            bool result = LocalNoteSqlite.checkTitle(title);
+            Assert.AreEqual(result, false);
+        }
+
+        [TestMethod]
+        //Test get notes from database
+        public void SqliteGetNotes()
+        {
+            String title = "testTitle";
+            List<NoteModel> notes = new List<NoteModel>();
+            
+            notes =LocalNoteSqlite.GetNotes();
+             
+            Assert.AreEqual(title, notes[0].NoteTitle);
+        }
+
+
+
+        [TestMethod]
+        //Test edit the note content
+        public void SqliteEdit()
+        {
+            
+            LocalNoteSqlite.EdidNote("testTitle", "newContent");
+            
+            List<NoteModel> notes = new List<NoteModel>();
+
+            notes = LocalNoteSqlite.GetNotes();
+  
+
+            Assert.AreEqual("newContent", notes[0].NoteContent);
+        }
+
+        [TestMethod]
+        //Test delete the note from database
+        public void SqliteDelete()
+        {
+            
+            String title = "testDelete";
+            LocalNoteSqlite.AddNote(title, "testDelete");
+            LocalNoteSqlite.DeleteNote(title);
+
+            bool result=LocalNoteSqlite.checkTitle(title);
+            //If delete note succefule return true
+
+            Assert.AreEqual(result, true);
+        }
+
+
         [TestMethod]
         public void test_CheckNoteTitle()
         {
@@ -59,7 +142,7 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void TestNullArg()
+        public void Test_LoadNoteException()
         {
             //Test reading the note file in the main ApplicationData.Current.LocalFolder
             bool callFailed = false;
@@ -73,20 +156,37 @@ namespace UnitTestProject
             }
             Assert.IsTrue(callFailed, "No permission to access ApplicationData.Current.LocalFolder of main function;");
         }
-        
+
         [TestMethod]
         public void test_getContent()
         {
             //Test the getcontent function in NoteModel,
-            //this function returns the content of the corresponding title
-            List<NoteModel> test= new List<NoteModel>();
+            //This function returns the content of the corresponding title
+            List<NoteModel> test = new List<NoteModel>();
             test.Add(new NoteModel("abc", "def"));
             test.Add(new NoteModel("def", "xyz"));
             //that function only use for unit test
-            string result =NoteModel.getContent(test, "abc");
+            string result = NoteModel.getContent(test, "abc");
 
             Assert.AreEqual("def", result);
         }
 
-    }  
+        [TestMethod]
+        public void test_countWords()
+        {
+            //Test the getcontent function in NoteModel,
+            //This function returns the word count of the content of the corresponding title
+            List<NoteModel> test = new List<NoteModel>();
+            test.Add(new NoteModel("abc", "I'm ready for count"));
+            test.Add(new NoteModel("def", "xyz"));
+
+
+            int count = "I'm ready for count".Length;
+            //that function only use for unit test
+            int result = NoteModel.countWords(test, "abc");
+
+            Assert.AreEqual(count, result);
+        }
+
+    }
 }

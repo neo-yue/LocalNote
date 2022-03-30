@@ -25,14 +25,45 @@ namespace LocalNote.Command
            return lnvm.SelectedNote != null;
         }
 
+        //public async void Execute(object parameter)
+        //{
+        //    ContentDialog confirmDelete = new ContentDialog         //Confirm delete again
+        //    { 
+        //        Title = "Confirm Delete",
+        //        Content = "Are you sure you want to delete?",
+        //        PrimaryButtonText = "Confirm", 
+        //        SecondaryButtonText = "Cancel" 
+        //    };
+        //    ContentDialogResult result = await confirmDelete.ShowAsync();
+
+        //    if (result == ContentDialogResult.Primary)
+        //    {
+        //        try
+        //        {
+        //            LocalNoteRepo.DeleteNote(lnvm.SelectedNote.NoteTitle);    //delete note
+        //            DeleteSelected?.Invoke(this, EventArgs.Empty);                 //trigger DeleteSelected event
+        //        }
+        //        catch (Exception)
+        //        {
+        //            ContentDialog errorDialog = new ContentDialog
+        //            { 
+        //                Title = "Error",
+        //                Content = "There was an error deleting the file", 
+        //                PrimaryButtonText = "OK" };
+        //            await errorDialog.ShowAsync();
+        //        }
+
+        //    }
+        //}
+
         public async void Execute(object parameter)
         {
             ContentDialog confirmDelete = new ContentDialog         //Confirm delete again
-            { 
+            {
                 Title = "Confirm Delete",
                 Content = "Are you sure you want to delete?",
-                PrimaryButtonText = "Confirm", 
-                SecondaryButtonText = "Cancel" 
+                PrimaryButtonText = "Confirm",
+                SecondaryButtonText = "Cancel"
             };
             ContentDialogResult result = await confirmDelete.ShowAsync();
 
@@ -40,21 +71,23 @@ namespace LocalNote.Command
             {
                 try
                 {
-                    LocalNoteRepo.DeleteNote(lnvm.SelectedNote.NoteTitle);    //delete note
+                    LocalNoteSqlite.DeleteNote(lnvm.SelectedNote.NoteTitle);    //delete note
                     DeleteSelected?.Invoke(this, EventArgs.Empty);                 //trigger DeleteSelected event
                 }
                 catch (Exception)
                 {
                     ContentDialog errorDialog = new ContentDialog
-                    { 
+                    {
                         Title = "Error",
-                        Content = "There was an error deleting the file", 
-                        PrimaryButtonText = "OK" };
+                        Content = "There was an error deleting the file",
+                        PrimaryButtonText = "OK"
+                    };
                     await errorDialog.ShowAsync();
                 }
 
             }
         }
+
 
 
         public void FireCanExecuteChanged()

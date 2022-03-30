@@ -30,6 +30,7 @@ namespace LocalNote
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            Repositories.LocalNoteSqlite.InitializeDB();
         }
 
         /// <summary>

@@ -28,12 +28,10 @@ namespace LocalNote
     public sealed partial class MainPage : Page
     {
         public ViewModels.LocalNoteViewModel LNViewModel { get; set; }
-
         public MainPage()
         {
             this.InitializeComponent();
             this.LNViewModel = new ViewModels.LocalNoteViewModel();
-
             //bind mainpage to  LNViewModel
             LNViewModel.MainPage = this;
         }
@@ -72,17 +70,19 @@ namespace LocalNote
             return ContentBox.IsReadOnly;
         }
 
-        private async void AboutButton_Click(object sender, RoutedEventArgs e)
-        {
-            AboutDialog ad = new AboutDialog();
-            ContentDialogResult result = await ad.ShowAsync();
-
-
-         }
-
-        //private void AboutButton_Click(object sender, RoutedEventArgs e)
+        //private async void AboutButton_Click(object sender, RoutedEventArgs e)
         //{
-        //    Frame.Navigate(typeof(AboutPage));
-        //}
+        //    AboutDialog ad = new AboutDialog();
+        //    ContentDialogResult result = await ad.ShowAsync();
+
+
+        // }
+
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(AboutPage));
+        }
+
+    
     }
 }

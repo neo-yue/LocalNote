@@ -43,12 +43,18 @@ namespace LocalNote.ViewModels
 
         public void UnSellected(object sender, EventArgs e) {                       //Unsellected Note
             SelectedNote = null;
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));    
         }
 
         public void UpdateNote(object sender, EventArgs e)                      //update note content after edit
         {
             SelectedNote.NoteContent = MainPage.NoteContent;
+            MainPage.textLock();
+            AddCommand.FireCanExecuteChanged();
+            SaveCommand.FireCanExecuteChanged();
+            EditCommand.FireCanExecuteChanged();
+            DeleteCommand.FireCanExecuteChanged();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedNote"));
 
         }
@@ -56,7 +62,12 @@ namespace LocalNote.ViewModels
         public void AddNewNote(object sender, EventArgs e) {            // add new note to _allLocalNotes
             if (SaveCommand.newNote != null) { 
             _allLocalNotes.Add(SaveCommand.newNote);
-            PerformFiltering();
+                MainPage.textLock();
+                PerformFiltering();
+                AddCommand.FireCanExecuteChanged();
+                SaveCommand.FireCanExecuteChanged();
+                EditCommand.FireCanExecuteChanged();
+                DeleteCommand.FireCanExecuteChanged();
 
             }
         }
@@ -78,7 +89,11 @@ namespace LocalNote.ViewModels
             ExitCommand = new ExitCommand();
 
             LocalNotes =new ObservableCollection<NoteModel>();
-            _allLocalNotes= LocalNoteRepo.LoadNote();
+
+            //_allLocalNotes= LocalNoteRepo.LoadNote();
+            _allLocalNotes = LocalNoteSqlite.GetNotes();
+
+
             SaveCommand.createdNewNote += AddNewNote;                       //Execute function after event is triggered
             AddCommand.UnSellected += UnSellected;
             SaveCommand.editNewNote += UpdateNote;
